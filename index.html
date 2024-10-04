@@ -32,33 +32,6 @@
             position: relative;
         }
         
-        .toggle-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 60px;
-            height: 30px;
-            background-color: #444;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5px;
-        }
-        
-        .toggle-switch div {
-            width: 25px;
-            height: 25px;
-            background-color: #fff;
-            border-radius: 3px;
-            transition: transform 0.2s;
-        }
-        
-        .toggle-switch.light div {
-            transform: translateX(30px);
-        }
-        
         h1 {
             margin-bottom: 20px;
             color: #fff;
@@ -77,7 +50,7 @@
             font-size: 14px;
         }
         
-        input {
+        select, input {
             padding: 12px;
             margin-top: 5px;
             border: 2px solid #666;
@@ -88,18 +61,7 @@
             transition: border-color 0.2s;
         }
         
-        input:focus {
-            border-color: #007BFF;
-            outline: none;
-        }
-        
-        .light-mode input {
-            background-color: #f0f0f0;
-            color: #333;
-            border-color: #ccc;
-        }
-        
-        .light-mode input:focus {
+        input:focus, select:focus {
             border-color: #007BFF;
             outline: none;
         }
@@ -141,12 +103,6 @@
             justify-content: center;
         }
         
-        .light-mode .result-box {
-            background-color: #f0f0f0;
-            color: #333;
-            border-color: #ccc;
-        }
-        
         .footer {
             margin-top: 40px;
             font-size: 0.9em;
@@ -154,203 +110,84 @@
             text-align: center;
             width: 100%;
         }
-        
-        .light-mode {
-            background: linear-gradient(to right, #ffffff, #e0e0e0);
-            color: #333;
-        }
-        
-        .light-mode .container {
-            background-color: #fff;
-            color: #333;
-        }
-        
-        .light-mode label {
-            color: #333;
-        }
-        
-        .light-mode button {
-            background-color: #007BFF;
-            color: #fff;
-        }
-        
-        .light-mode .footer {
-            color: #666;
-        }
-        
-        .light-mode #lotSize {
-            color: #007BFF;
-        }
-        
-        .light-mode h1 {
-            color: #333;
-        }
-        
-        .alert-box {
-            position: fixed;
-            bottom: -100px;
-            height: 50px;
-            right: 20px;
-            width: 300px;
-            background-color: #ffeb3b;
-            color: #856404;
-            text-align: left;
-            padding: 10px 15px;
-            border: 1px solid #ffeeba;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: bottom 0.5s;
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .alert-box.show {
-            display: flex;
-            bottom: 20px;
-        }
-        
-        .alert-box .message {
-            display: flex;
-            align-items: center;
-        }
-        
-        .alert-box .icon {
-            margin-right: 10px;
-        }
-        
-        .alert-box .icon svg {
-            width: 24px;
-            height: 24px;
-            fill: #eed202;
-        }
-        
-        .alert-box .close-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #856404;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 19px;
-        }
-        
-        .alert-box .close-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: black;
-        }
     </style>
 </head>
 
 <body>
-    <div class="toggle-switch" onclick="toggleMode()">
-        <div></div>
-    </div>
     <div class="container">
-        <h1>XAUUSD Lot Size Calculator</h1>
-        <form id="lotSizeForm">
-            <label for="balance">Account Balance ($):</label>
-            <input type="number" id="balance" value="5000" list="balanceOptions" required>
-            <datalist id="balanceOptions"></datalist>
+        <h1>Lot Size Calculator</h1>
 
+        <form id="lotSizeForm">
+            <!-- Dropdown for selecting instrument -->
+            <label for="instrument">Select Instrument:</label>
+            <select id="instrument">
+                <option value="forex">Forex</option>
+                <option value="nas100ft">NAS100ft</option>
+                <option value="nasdaq">NASDAQ</option>
+                <option value="ndx100">NDX100</option>
+            </select>
+
+            <!-- Account balance input -->
+            <label for="balance">Account Balance ($):</label>
+            <input type="number" id="balance" value="5000" required>
+
+            <!-- Risk percentage input -->
             <label for="risk">Risk Percentage (%):</label>
             <input type="number" id="risk" value="1" required>
 
+            <!-- Stop loss input -->
             <label for="stopLoss">Stop Loss (pips):</label>
             <input type="number" id="stopLoss" required>
 
             <button type="button" onclick="calculateLotSize()">Calculate</button>
         </form>
+
+        <!-- Result display -->
         <div id="result" class="result-box">
-            <h2 style="font-size: 1.2em;">Lot Size: <span id="lotSize"></span></h2>
+            <h2>Lot Size: <span id="lotSize"></span></h2>
         </div>
+
         <div class="footer">
             &copy; 2024 Chaiyamm Trade Insider
         </div>
     </div>
 
-    <div id="alertBox" class="alert-box">
-        <div class="message">
-            <div class="icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11.9998 8.99999V13M11.9998 17H12.0098M10.6151 3.89171L2.39019 18.0983C1.93398 18.8863 1.70588 19.2803 1.73959 19.6037C1.769 19.8857 1.91677 20.142 2.14613 20.3088C2.40908 20.5 2.86435 20.5 3.77487 20.5H20.2246C21.1352 20.5 21.5904 20.5 21.8534 20.3088C22.0827 20.142 22.2305 19.8857 22.2599 19.6037C22.2936 19.2803 22.0655 18.8863 21.6093 18.0983L13.3844 3.89171C12.9299 3.10654 12.7026 2.71396 12.4061 2.58211C12.1474 2.4671 11.8521 2.4671 11.5935 2.58211C11.2969 2.71396 11.0696 3.10655 10.6151 3.89171Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <div>
-                <strong>Warning:</strong> Please enter valid numbers for all fields.
-            </div>
-        </div>
-        <button class="close-btn" onclick="hideAlert()">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </button>
-    </div>
-
     <script>
-        const previousBalances = JSON.parse(localStorage.getItem('previousBalances')) || [];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const balanceOptions = document.getElementById('balanceOptions');
-            previousBalances.forEach(balance => {
-                const option = document.createElement('option');
-                option.value = balance;
-                balanceOptions.appendChild(option);
-            });
-        });
-
+        // Function to calculate lot size based on selected instrument
         function calculateLotSize() {
-            // Get input values
+            // Get values from the form
+            const instrument = document.getElementById('instrument').value;
             const balance = parseFloat(document.getElementById('balance').value);
             const risk = parseFloat(document.getElementById('risk').value);
             const stopLoss = parseFloat(document.getElementById('stopLoss').value);
 
-            // Validate input values
+            // Validate inputs
             if (isNaN(balance) || isNaN(risk) || isNaN(stopLoss) || balance <= 0 || risk <= 0 || stopLoss <= 0) {
-                showAlert();
+                alert('Please enter valid numbers for all fields.');
                 return;
             }
 
-            // Save balance to localStorage
-            if (!previousBalances.includes(balance)) {
-                previousBalances.push(balance);
-                localStorage.setItem('previousBalances', JSON.stringify(previousBalances));
+            // Risk in dollars
+            const riskAmount = (balance * (risk / 100));
+
+            let lotSize = 0;
+
+            // Determine the calculation based on the selected instrument
+            switch (instrument) {
+                case 'forex':
+                    lotSize = (riskAmount / stopLoss).toFixed(2);  // Simple example formula for Forex
+                    break;
+                case 'nas100ft':
+                case 'nasdaq':
+                case 'ndx100':
+                    lotSize = ((riskAmount / stopLoss) * 10).toFixed(2);  // Example: Different calculation for indices
+                    break;
+                default:
+                    lotSize = 0;
             }
 
-            // Calculate risk amount
-            const riskAmount = (balance * risk) / 100;
-
-            // Calculate lot size
-            const lotSize = riskAmount / stopLoss / 10; // XAUUSD point value is typically 10
-
-            // Display result
-            document.getElementById('lotSize').innerText = lotSize.toFixed(2);
-        }
-
-        function toggleMode() {
-            const body = document.body;
-            const toggleSwitch = document.querySelector('.toggle-switch');
-            body.classList.toggle('light-mode');
-            toggleSwitch.classList.toggle('light');
-        }
-
-        function showAlert() {
-            const alertBox = document.getElementById('alertBox');
-            alertBox.style.display = 'flex';
-            setTimeout(() => {
-                alertBox.classList.add('show');
-            }, 10);
-        }
-
-        function hideAlert() {
-            const alertBox = document.getElementById('alertBox');
-            alertBox.classList.remove('show');
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 500);
+            // Display the result
+            document.getElementById('lotSize').innerText = lotSize;
         }
     </script>
 </body>
